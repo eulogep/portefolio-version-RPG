@@ -2,18 +2,115 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ProjectModal from '@/components/ui/ProjectModal';
+import { useState } from 'react';
+import { useEffect, useRef } from 'react';
+
+const statusColors = {
+  fini: 'bg-green-100 text-green-700 border-green-400',
+  'en cours': 'bg-yellow-100 text-yellow-800 border-yellow-400',
+  élaboration: 'bg-blue-100 text-blue-700 border-blue-400',
+  prévu: 'bg-gray-200 text-gray-600 border-gray-400',
+};
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 'fini': return 'Fini';
+    case 'en cours': return 'En cours';
+    case 'élaboration': return 'En élaboration';
+    case 'prévu': return 'À venir';
+    default: return status;
+  }
+};
 
 const ProjectCard = ({ project }) => {
+  const cardRef = useRef(null);
+  const techRef = useRef([]);
+
+  useEffect(() => {
+    import('animejs').then(anime => {
+      if (cardRef.current) {
+        anime.default({
+          targets: cardRef.current,
+          opacity: [0, 1],
+          translateY: [40, 0],
+          easing: 'easeOutExpo',
+          duration: 900,
+          delay: 100,
+        });
+      }
+      if (techRef.current.length > 0) {
+        anime.default({
+          targets: techRef.current,
+          opacity: [0, 1],
+          translateY: [20, 0],
+          easing: 'easeOutExpo',
+          duration: 700,
+          delay: anime.default.stagger(80, { start: 400 }),
+        });
+      }
+    });
+  }, []);
+
+  const statusClass = statusColors[project.status] || 'bg-gray-100 text-gray-700 border-gray-300';
+  const showPPT = project.pptLink && project.pptLink.length > 5;
+  const showDemo = project.demoLink && project.demoLink.length > 5;
+  const showGithub = project.githubLink && project.githubLink.length > 5;
+  const imageUrl = project.image && project.image.startsWith('http') ? project.image : 'https://images.unsplash.com/photo-1572177812156-58036aae439c';
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState('demo');
+  const [modalUrl, setModalUrl] = useState('');
+
+  const handleOpenModal = (type, url) => {
+    setModalType(type);
+    setModalUrl(url);
+    setModalOpen(true);
+  };
+
   return (
-    <motion.div
-      whileHover={{ y: -10 }}
-      className="project-card glass-effect rounded-2xl overflow-hidden group h-full flex flex-col"
-    >
+    <>
+      <motion.div
+        ref={cardRef}
+        whileHover={{ y: -10 }}
+        className="project-card glass-effect rounded-2xl overflow-hidden group h-full flex flex-col shadow-xl transition-shadow duration-300 hover:shadow-2xl"
+      >
       <div className="relative overflow-hidden">
-        <img 
+        <img
           alt={`Aperçu du projet ${project.title}`}
           className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-         src="https://images.unsplash.com/photo-1572177812156-58036aae439c" />
+          src={imageUrl}
+          onMouseEnter={e => {
+            import('animejs').then(anime => {
+              anime.default({
+                targets: e.currentTarget,
+                scale: 1.08,
+                duration: 400,
+                easing: 'easeOutExpo',
+              });
+            });
+          }}
+          onMouseLeave={e => {
+            import('animejs').then(anime => {
+              anime.default({
+                targets: e.currentTarget,
+                scale: 1,
+                duration: 400,
+                easing: 'easeOutExpo',
+              });
+            });
+          }}
+        />
+        <div className="absolute top-3 left-3">
+          {project.status && (
+            <span
+              className={`border px-2 py-0.5 rounded-full text-xs font-semibold shadow-sm ${statusClass}`}
+              aria-label={`Statut du projet : ${getStatusLabel(project.status)}`}
+            >
+              {getStatusLabel(project.status)}
+            </span>
+          )}
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
@@ -26,10 +123,11 @@ const ProjectCard = ({ project }) => {
         </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {project.tech.map((tech) => (
+          {project.tech.map((tech, i) => (
             <span
               key={tech}
-              className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded text-xs"
+              ref={el => techRef.current[i] = el}
+              className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded text-xs opacity-0"
             >
               {tech}
             </span>
@@ -37,25 +135,107 @@ const ProjectCard = ({ project }) => {
         </div>
 
         <div className="flex space-x-3 mt-auto">
-          {project.githubLink && (
+          {showGithub && (
             <a href={project.githubLink} target="_blank" rel="noopener noreferrer" className="flex-1">
-              <Button variant="outline" size="sm" className="w-full">
-                <Github className="w-4 h-4 mr-2" />
-                Code
+              <Button variant="outline" size="sm" className="w-full group" aria-label="Voir le code sur GitHub"
+                onMouseEnter={e => {
+                  import('animejs').then(anime => {
+                    anime.default({
+                      targets: e.currentTarget.querySelector('svg'),
+                      rotate: 360,
+                      duration: 600,
+                      easing: 'easeOutElastic(1, .8)',
+                    });
+                  });
+                }}
+                onMouseLeave={e => {
+                  import('animejs').then(anime => {
+                    anime.default({
+                      targets: e.currentTarget.querySelector('svg'),
+                      rotate: 0,
+                      duration: 600,
+                      easing: 'easeOutElastic(1, .8)',
+                    });
+                  });
+                }}
+              >
+                <Github className="w-4 h-4 mr-2 inline-block" />
+                {project.githubLink && project.githubLink.includes('figma.com') ? 'Lecture' : 'Code'}
               </Button>
             </a>
           )}
-          {project.demoLink && (
-            <a href={project.demoLink} target="_blank" rel="noopener noreferrer" className="flex-1">
+          {showDemo && (
+            <button
+              type="button"
+              className="flex-1 group"
+              aria-label="Voir la démo du projet"
+              onClick={() => handleOpenModal('demo', project.demoLink)}
+              onMouseEnter={e => {
+                import('animejs').then(anime => {
+                  anime.default({
+                    targets: e.currentTarget.querySelector('svg'),
+                    translateY: [0, -8, 0],
+                    duration: 500,
+                    easing: 'easeOutBounce',
+                  });
+                });
+              }}
+            >
               <Button size="sm" className="w-full">
-                <ExternalLink className="w-4 h-4 mr-2" />
+                <ExternalLink className="w-4 h-4 mr-2 inline-block" />
                 Démo
               </Button>
-            </a>
+            </button>
+          )}
+          {showPPT && (
+            project.pptLink && project.pptLink.endsWith('.pptx') ? (
+              <a
+                href={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(window.location.origin + project.pptLink)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1"
+                aria-label="Voir la présentation PowerPoint en ligne"
+              >
+                <Button size="sm" className="w-full">
+                  <span role="img" aria-label="Présentation" className="mr-2 inline-block">📊</span>
+                  Présentation
+                </Button>
+              </a>
+            ) : (
+              <button
+                type="button"
+                className="flex-1 group"
+                aria-label="Voir la présentation PowerPoint ou PDF"
+                onClick={() => handleOpenModal('ppt', project.pptLink)}
+                onMouseEnter={e => {
+                  import('animejs').then(anime => {
+                    anime.default({
+                      targets: e.currentTarget.querySelector('span[role="img"]'),
+                      scale: [1, 1.2, 1],
+                      duration: 400,
+                      easing: 'easeInOutSine',
+                    });
+                  });
+                }}
+              >
+                <Button size="sm" className="w-full">
+                  <span role="img" aria-label="Présentation" className="mr-2 inline-block">📊</span>
+                  Présentation
+                </Button>
+              </button>
+            )
           )}
         </div>
       </div>
     </motion.div>
+    <ProjectModal
+      open={modalOpen}
+      onOpenChange={setModalOpen}
+      title={project.title}
+      url={modalUrl}
+      type={modalType}
+    />
+    </>
   );
 };
 
