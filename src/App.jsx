@@ -22,6 +22,7 @@ import Passions from '@/components/sections/Passions';
 import VideoPresentation from '@/components/sections/VideoPresentation';
 import Certificats from '@/components/sections/Certificats';
 import FunFacts from '@/components/sections/FunFacts';
+import ChasseurTaches from './components/sections/ChasseurTaches';
 
 function App() {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -93,6 +94,7 @@ function App() {
             <Skills />
             <Projects />
             <Contact />
+            <ChasseurTaches />
           </main>
           
           <Footer />

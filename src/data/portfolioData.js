@@ -232,6 +232,16 @@ Accédez à la démo locale, au code source et au README ci-dessous.`,
     pptLink: '',
     status: 'en cours',
   },
+  {
+    title: 'Chasseur de Tâches',
+    description: `Un jeu de gestion de tâches RPG où chaque tâche accomplie fait monter votre personnage de niveau, améliore ses statistiques et le rapproche du rang S.\n\n- 🎮 Système de progression RPG avec niveaux et statistiques\n- 📝 Gestion des tâches quotidiennes\n- 🏆 Quêtes journalières et récompenses\n- 🛒 Boutique d'objets cosmétiques\n- 📊 Tableau de bord personnalisé\n\nStack : React Native, TypeScript, Zustand, Firebase, Expo, React Navigation, React Native Paper, Reanimated.`,
+    tech: ['React Native', 'TypeScript', 'Zustand', 'Firebase', 'Expo', 'React Navigation', 'React Native Paper', 'Reanimated'],
+    image: 'smarttasks.png', // à remplacer par une image spécifique si tu en as une
+    githubLink: '', // à compléter si tu as le repo
+    demoLink: '', // à compléter si tu as une démo
+    pptLink: '',
+    status: 'en cours',
+  },
 ];
 
 export const certifications = [

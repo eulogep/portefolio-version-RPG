@@ -1,0 +1,53 @@
+image: node:18
+
+stages:
+  - build
+  - deploy
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .yarn/
+
+build:
+  stage: build
+  script:
+    - echo "Installation des dépendances..."
+    - npm ci
+    - echo "Construction de l'application..."
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+  only:
+    - main
+
+deploy_gh_pages:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H 'gitlab.com' >> ~/.ssh/known_hosts
+    - git config --global user.name "GitLab CI/CD"
+    - git config --global user.email "gitlab@example.com"
+  script:
+    - echo "Déploiement sur les pages GitLab..."
+    - mkdir public
+    - cp -r dist/* public/
+    - echo "Portfolio personnel" > public/index.html
+    - echo "Les fichiers ont été copiés dans le répertoire public"
+    - ls -la public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
+  environment:
+    name: production
+    url: https://$CI_PROJECT_NAMESPACE.gitlab.io/$CI_PROJECT_NAME
+  only:
+    - main
