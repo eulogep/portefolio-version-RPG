@@ -1,6 +1,7 @@
 image: node:18
 
 stages:
+  - install
   - build
   - deploy
 
@@ -8,13 +9,20 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
-    - .yarn/
+    - .npm/
+  policy: pull-push
+
+install_dependencies:
+  stage: install
+  script:
+    - npm ci --cache .npm --prefer-offline
+  artifacts:
+    paths:
+      - node_modules/
 
 build:
   stage: build
   script:
-    - echo "Installation des dépendances..."
-    - npm ci
     - echo "Construction de l'application..."
     - npm run build
   artifacts:
@@ -26,9 +34,9 @@ build:
 
 deploy_gh_pages:
   stage: deploy
-  image: alpine:latest
+  image: node:18
   before_script:
-    - apk add --no-cache git openssh-client
+    - apt-get update && apt-get install -y git openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
