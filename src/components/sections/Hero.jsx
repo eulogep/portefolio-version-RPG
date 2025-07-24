@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, Download } from 'lucide-react';
+import { Github, Linkedin, Mail, Download, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { personalInfo } from '@/data/portfolioData';
+import { InteractiveCard, InteractiveButton, HolographicCard, ParticleTrail } from '@/components/interactive/InteractiveElements';
 
 const Hero = ({ scrollToSection, handleDownloadCV }) => {
   return (
@@ -20,12 +21,8 @@ const Hero = ({ scrollToSection, handleDownloadCV }) => {
         <ellipse cx="20%" cy="80%" rx="180" ry="100" fill="url(#hero-grad)" />
       </svg>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="glass-effect-premium p-10 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-fade-in"
-        >
+        <HolographicCard className="p-10">
+          <ParticleTrail particleCount={15} color="#3B82F6">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -74,22 +71,22 @@ const Hero = ({ scrollToSection, handleDownloadCV }) => {
             transition={{ delay: 1 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Button
+            <InteractiveButton
               onClick={() => scrollToSection('projects')}
+              variant="primary"
               size="lg"
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 rounded-full"
+              icon={Sparkles}
             >
               Voir mes projets
-            </Button>
-            <Button
+            </InteractiveButton>
+            <InteractiveButton 
               onClick={handleDownloadCV}
-              variant="outline"
+              variant="secondary"
               size="lg"
-              className="px-8 py-3 rounded-full"
+              icon={Download}
             >
-              <Download className="w-4 h-4 mr-2" />
               Télécharger CV
-            </Button>
+            </InteractiveButton>
           </motion.div>
 
           <motion.div
@@ -108,7 +105,8 @@ const Hero = ({ scrollToSection, handleDownloadCV }) => {
               <Mail className="w-6 h-6" />
             </motion.a>
           </motion.div>
-        </motion.div>
+          </ParticleTrail>
+        </HolographicCard>
       </div>
       {/* Styles premium */}
       <style>{`
