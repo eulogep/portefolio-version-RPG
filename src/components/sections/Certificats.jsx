@@ -1,126 +1,146 @@
 import React, { useState } from 'react';
-import SectionTitle from '@/components/ui/SectionTitle';
+import { motion } from 'framer-motion';
+import { Award, FileText, Image as ImageIcon, Filter, Star, BookOpen } from 'lucide-react';
 
 const certificats = [
-  { src: '/certificat/baccalauréat22.jpg', type: 'image', title: 'Baccalauréat 2022', desc: 'Diplôme obtenu en 2022 avec mention.' },
-  { src: '/certificat/baccalauréat2.pdf', type: 'pdf', title: 'Baccalauréat 2022 (PDF)', desc: 'Version PDF officielle du diplôme.' },
-  { src: '/certificat/Certificate five guys.pdf.png', type: 'image', title: 'Certificate Five Guys', desc: 'Formation en restauration rapide.' },
-  { src: '/certificat/Certificate.pdf.svg', type: 'image', title: 'Certificate (SVG)', desc: 'Certification design vectoriel.' },
-  { src: '/certificat/sql_basic certificate.pdf', type: 'pdf', title: 'SQL Basic Certificate', desc: 'Certification SQL de base.' },
-  { src: '/certificat/r_basic certificate.pdf', type: 'pdf', title: 'R Basic Certificate', desc: 'Certification R pour l’analyse de données.' },
-  { src: '/certificat/java_basic certificate.pdf', type: 'pdf', title: 'Java Basic Certificate', desc: 'Certification Java débutant.' },
-  { src: '/certificat/asgnmt-01-java-fr-16.pdf', type: 'pdf', title: 'Assignment Java', desc: 'Projet Java universitaire.' },
+  { src: '/certificat/baccalauréat22.jpg', type: 'image', title: 'Baccalauréat 2022', desc: 'Diplôme obtenu en 2022 avec mention.', rarity: 'rare', category: 'diplome' },
+  { src: '/certificat/baccalauréat2.pdf', type: 'pdf', title: 'Baccalauréat 2022 (PDF)', desc: 'Version PDF officielle du diplôme.', rarity: 'rare', category: 'diplome' },
+  { src: '/certificat/Certificate five guys.pdf.png', type: 'image', title: 'Certificate Five Guys', desc: 'Formation en restauration rapide.', rarity: 'common', category: 'pro' },
+  { src: '/certificat/sql_basic certificate.pdf', type: 'pdf', title: 'SQL Basic Certificate', desc: 'Certification SQL de base.', rarity: 'epic', category: 'tech' },
+  { src: '/certificat/r_basic certificate.pdf', type: 'pdf', title: 'R Basic Certificate', desc: 'Certification R pour l’analyse de données.', rarity: 'epic', category: 'tech' },
+  { src: '/certificat/java_basic certificate.pdf', type: 'pdf', title: 'Java Basic Certificate', desc: 'Certification Java débutant.', rarity: 'epic', category: 'tech' },
+  { src: '/certificat/asgnmt-01-java-fr-16.pdf', type: 'pdf', title: 'Assignment Java', desc: 'Projet Java universitaire.', rarity: 'common', category: 'pro' },
 ];
 
-const Certificats = () => {
-  const [zoomed, setZoomed] = useState(null);
-  const [zoomedIdx, setZoomedIdx] = useState(null);
+const rarityColors = {
+  legendary: 'from-yellow-400 to-yellow-600',
+  epic: 'from-purple-500 to-purple-700',
+  rare: 'from-blue-500 to-blue-700',
+  common: 'from-gray-500 to-gray-700',
+};
 
-  React.useEffect(() => {
-    if (zoomedIdx === null) return;
-    const handleKey = (e) => {
-      if (e.key === 'Escape') setZoomedIdx(null);
-      if (e.key === 'ArrowLeft') setZoomedIdx((i) => (i > 0 ? i - 1 : certificats.length - 1));
-      if (e.key === 'ArrowRight') setZoomedIdx((i) => (i < certificats.length - 1 ? i + 1 : 0));
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [zoomedIdx]);
+const rarityLabels = {
+  legendary: 'Légendaire',
+  epic: 'Épique',
+  rare: 'Rare',
+  common: 'Commun',
+};
+
+const categoryLabels = {
+  diplome: 'Diplômes',
+  tech: 'Techniques',
+  pro: 'Professionnels',
+};
+
+const Certificats = () => {
+  const [filter, setFilter] = useState('all');
+  const filteredCerts = filter === 'all' ? certificats : certificats.filter(c => c.category === filter);
+  const allCategories = Array.from(new Set(certificats.map(c => c.category)));
 
   return (
-    <section id="certificats" className="relative py-24 bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-hidden">
-      {/* Fond décoratif SVG */}
-      <svg className="absolute left-0 top-0 w-full h-full pointer-events-none opacity-20" aria-hidden="true">
-        <defs>
-          <radialGradient id="certif-grad" cx="50%" cy="50%" r="80%">
-            <stop offset="0%" stopColor="#fbbf24" />
-            <stop offset="60%" stopColor="#f472b6" />
-            <stop offset="100%" stopColor="transparent" />
-          </radialGradient>
-        </defs>
-        <circle cx="80%" cy="20%" r="300" fill="url(#certif-grad)" />
-        <circle cx="20%" cy="80%" r="200" fill="url(#certif-grad)" />
-      </svg>
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-        <SectionTitle
-          title="Certificats & Diplômes"
-          subtitle="Mes attestations, diplômes et certifications."
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 mt-12">
-          {certificats.map((cert, idx) => (
-            <div
-              key={idx}
-              className="relative group rounded-3xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700 p-5 flex flex-col items-center glass-effect-premium transition-transform duration-300 hover:scale-105 hover:shadow-[0_8px_32px_0_rgba(251,191,36,0.25)] hover:border-yellow-400 dark:hover:border-pink-400 hover:z-20"
-              style={{ backdropFilter: 'blur(16px)', background: 'rgba(255,255,255,0.25)' }}
+    <section id="certificats" className="min-h-screen py-20 relative bg-gradient-to-br from-yellow-900 via-purple-950 to-gray-900">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="font-orbitron font-bold text-4xl lg:text-6xl glow-text mb-6">
+            INVENTAIRE
+          </h2>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Mes diplômes, certifications et badges. Chaque item raconte une histoire !
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap justify-center gap-4 mb-12"
+        >
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-full font-semibold glass-effect border-white/20 transition-all ${filter === 'all' ? 'bg-purple-600 text-white' : 'hover:bg-white/10 text-gray-300'}`}
+          >
+            <Filter className="w-4 h-4 mr-2 inline" /> Tous
+          </button>
+          {allCategories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              className={`px-4 py-2 rounded-full font-semibold glass-effect border-white/20 transition-all ${filter === cat ? 'bg-purple-600 text-white' : 'hover:bg-white/10 text-gray-300'}`}
             >
-              {cert.type === 'image' ? (
-                <button onClick={() => { setZoomedIdx(idx); }} className="w-full">
-                  <img src={cert.src} alt={cert.title} className="object-contain w-full h-48 mb-4 rounded-xl group-hover:scale-110 transition-transform duration-500 bg-gray-50 dark:bg-gray-900 shadow-md" />
+              {categoryLabels[cat] || cat}
                 </button>
-              ) : (
-                <a href={cert.src} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center w-full h-48 mb-4 bg-gray-100 dark:bg-gray-900 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900 transition">
-                  <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><rect width="24" height="24" rx="12" fill="#3B82F6"/><path d="M8 16h8M8 12h8M8 8h8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
-                  <span className="mt-2 text-blue-600 dark:text-blue-300 font-semibold">Voir PDF</span>
-                </a>
-              )}
-              <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold shadow-md ${cert.type === 'pdf' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'} drop-shadow-lg`}>{cert.type === 'pdf' ? 'PDF' : 'Image'}</span>
-              <div className="mt-2 text-base font-bold text-gray-800 dark:text-gray-100 gradient-text-premium">{cert.title}</div>
-              <div className="mt-1 text-sm text-gray-500 dark:text-gray-300 italic">{cert.desc}</div>
-            </div>
           ))}
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {filteredCerts.map((cert, idx) => {
+            const colorClass = rarityColors[cert.rarity] || 'from-gray-500 to-gray-700';
+            const rarityLabel = rarityLabels[cert.rarity] || cert.rarity;
+            const Icon = cert.type === 'pdf' ? FileText : ImageIcon;
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.6, delay: idx * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05, y: -10 }}
+                className="glass-effect rounded-2xl p-6 relative overflow-hidden group cursor-pointer"
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${colorClass} opacity-10 group-hover:opacity-20 transition-opacity duration-300`} />
+                <div className="relative z-10 flex items-center gap-4 mb-4">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorClass} flex items-center justify-center shrink-0`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r ${colorClass} text-white mb-1`}>
+                      {rarityLabel}
+                    </div>
+                    <div className="text-sm text-gray-400">{categoryLabels[cert.category] || cert.category}</div>
+                  </div>
+                </div>
+                <div className="relative z-10 mb-2">
+                  <h3 className="font-orbitron font-bold text-xl mb-1 group-hover:text-purple-300 transition-colors">
+                    {cert.title}
+                  </h3>
+                  <p className="text-gray-300 text-sm mb-2 line-clamp-3">
+                    {cert.desc}
+                  </p>
         </div>
-        {/* Modale de zoom premium */}
-        {zoomedIdx !== null && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in" onClick={() => setZoomedIdx(null)}>
-            <div className="relative flex flex-col items-center">
-              <div className="mb-4 text-xl font-bold text-white drop-shadow-lg">{certificats[zoomedIdx].title}</div>
-              {certificats[zoomedIdx].type === 'image' ? (
-                <img src={certificats[zoomedIdx].src} alt="Certificat zoomé" className="max-w-3xl max-h-[80vh] rounded-2xl shadow-2xl border-4 border-white dark:border-gray-800 animate-zoom-in" onClick={e => e.stopPropagation()} />
-              ) : (
-                <a href={certificats[zoomedIdx].src} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center w-80 h-80 bg-gray-100 dark:bg-gray-900 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-900 transition" onClick={e => e.stopPropagation()}>
-                  <svg width="80" height="80" fill="none" viewBox="0 0 24 24"><rect width="24" height="24" rx="12" fill="#3B82F6"/><path d="M8 16h8M8 12h8M8 8h8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
-                  <span className="mt-4 text-blue-600 dark:text-blue-300 font-semibold text-lg">Voir PDF</span>
+                <div className="relative z-10 flex items-center gap-2 mb-2">
+                  {cert.type === 'image' ? (
+                    <a href={cert.src} target="_blank" rel="noopener noreferrer" className="px-2 py-1 bg-green-500/20 text-green-300 rounded-lg text-xs font-medium flex items-center gap-1">
+                      <ImageIcon className="w-3 h-3"/> Voir Image
+                    </a>
+                  ) : (
+                    <a href={cert.src} target="_blank" rel="noopener noreferrer" className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded-lg text-xs font-medium flex items-center gap-1">
+                      <FileText className="w-3 h-3"/> Voir PDF
                 </a>
               )}
-              <div className="mt-2 text-base text-gray-200 italic text-center max-w-md">{certificats[zoomedIdx].desc}</div>
-              <div className="flex gap-4 mt-6">
-                <button onClick={e => { e.stopPropagation(); setZoomedIdx(i => (i > 0 ? i - 1 : certificats.length - 1)); }} className="text-white bg-black/40 hover:bg-black/70 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold transition">&#8592;</button>
-                <button onClick={e => { e.stopPropagation(); setZoomedIdx(i => (i < certificats.length - 1 ? i + 1 : 0)); }} className="text-white bg-black/40 hover:bg-black/70 rounded-full w-12 h-12 flex items-center justify-center text-2xl font-bold transition">&#8594;</button>
               </div>
-              <button onClick={() => setZoomedIdx(null)} className="absolute top-4 right-4 text-white text-3xl font-bold bg-black/50 rounded-full w-12 h-12 flex items-center justify-center hover:bg-black/80 transition">&times;</button>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+              </motion.div>
+            );
+          })}
             </div>
-          </div>
+        {filteredCerts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-16"
+          >
+            <Award className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <p className="text-xl text-gray-400">Aucun certificat trouvé pour ce filtre</p>
+          </motion.div>
         )}
       </div>
-      {/* Styles premium */}
-      <style>{`
-        .glass-effect-premium {
-          background: rgba(255,255,255,0.25);
-          box-shadow: 0 8px 32px 0 rgba(251,191,36,0.15);
-          backdrop-filter: blur(16px);
-          border: 1.5px solid rgba(255,255,255,0.18);
-        }
-        .gradient-text-premium {
-          background: linear-gradient(90deg, #fbbf24 0%, #f472b6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .animate-fade-in {
-          animation: fadeInCertif 0.3s;
-        }
-        .animate-zoom-in {
-          animation: zoomInCertif 0.3s;
-        }
-        @keyframes fadeInCertif {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes zoomInCertif {
-          from { transform: scale(0.8); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-      `}</style>
     </section>
   );
 };

@@ -12,7 +12,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
-import Skills from '@/components/sections/Skills';
+import StatsRPGSection from '@/components/sections/StatsRPGSection';
 import Projects from '@/components/sections/Projects';
 import Contact from '@/components/sections/Contact';
 import BackToTopButton from '@/components/layout/BackToTopButton';
@@ -23,6 +23,7 @@ import VideoPresentation from '@/components/sections/VideoPresentation';
 import Certificats from '@/components/sections/Certificats';
 import FunFacts from '@/components/sections/FunFacts';
 import ChasseurTaches from './components/sections/ChasseurTaches';
+import KimiChatBot from './components/KimiChatBot';
 
 function App() {
   const [darkMode, toggleDarkMode] = useDarkMode();
@@ -91,10 +92,11 @@ function App() {
             <Passions />
             <Certificats />
             <FunFacts />
-            <Skills />
+            <StatsRPGSection />
             <Projects />
             <Contact />
             <ChasseurTaches />
+            <KimiChatBot />
           </main>
           
           <Footer />
