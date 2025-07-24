@@ -1,5 +1,6 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -174,4 +175,423 @@ body {
   pointer-events: none;
   z-index: 9999;
   transition: all 0.1s ease;
+}
+
+/* ===== IMMERSIVE RPG EFFECTS ===== */
+
+/* Perspective and 3D effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Shimmer animation for buttons */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 0.6s ease-out;
+}
+
+/* Glow text effect */
+.glow-text {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor,
+    0 0 20px currentColor;
+}
+
+/* Holographic effect */
+.holographic {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: holographic-shine 3s ease-in-out infinite;
+}
+
+@keyframes holographic-shine {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse glow effect */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Matrix-style text effect */
+@keyframes matrix-drop {
+  0% {
+    opacity: 1;
+    transform: translateY(-100vh);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh);
+  }
+}
+
+.matrix-text {
+  animation: matrix-drop 2s linear infinite;
+}
+
+/* Scanning line effect */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.animate-scan {
+  animation: scan-line 2s linear infinite;
+}
+
+/* Energy orb effect */
+@keyframes energy-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.animate-energy-pulse {
+  animation: energy-pulse 1.5s ease-in-out infinite;
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0%, 100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 0.3s ease-in-out infinite;
+}
+
+/* Neon glow borders */
+.neon-border {
+  border: 2px solid transparent;
+  background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff) border-box;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  animation: neon-glow 2s linear infinite;
+}
+
+@keyframes neon-glow {
+  0%, 100% {
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    filter: hue-rotate(180deg);
+  }
+}
+
+/* Magnetic effect */
+.magnetic {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.magnetic:hover {
+  transform: translate3d(0, -5px, 0);
+}
+
+/* Parallax scrolling */
+.parallax {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Interactive particle trail */
+@keyframes particle-float {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50px) scale(0);
+    opacity: 0;
+  }
+}
+
+.particle-trail {
+  animation: particle-float 1s ease-out forwards;
+}
+
+/* Cyberpunk grid */
+.cyber-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: cyber-grid-move 20s linear infinite;
+}
+
+@keyframes cyber-grid-move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+/* Loading bar animation */
+@keyframes loading-bar {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-loading {
+  animation: loading-bar 1.5s ease-out forwards;
+}
+
+/* Typewriter effect */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid;
+  white-space: nowrap;
+  animation: typewriter 2s steps(20) forwards, blink 0.5s step-end infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    border-color: transparent;
+  }
+  to {
+    border-color: currentColor;
+  }
+}
+
+/* 3D card flip */
+.card-flip {
+  perspective: 1000px;
+}
+
+.card-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-flip:hover .card-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card-flip-back {
+  transform: rotateY(180deg);
+}
+
+/* Ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  animation: ripple 0.6s ease-out;
+}
+
+/* Enhanced glassmorphism */
+.glass-enhanced {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Skill bar animations */
+@keyframes skill-fill {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.skill-bar {
+  animation: skill-fill 2s ease-out forwards;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Text reveal animation */
+@keyframes text-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.text-reveal {
+  animation: text-reveal 0.8s ease-out forwards;
+}
+
+/* Stagger children animation */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: text-reveal 0.6s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Theme transitions */
+.theme-transition {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .glass-enhanced {
+    backdrop-filter: blur(10px);
+  }
+  
+  .animate-float {
+    animation-duration: 2s;
+  }
+  
+  .cyber-grid {
+    background-size: 30px 30px;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

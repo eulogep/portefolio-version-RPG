@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
 import useDarkMode from '@/hooks/useDarkMode';
@@ -25,12 +25,67 @@ import FunFacts from '@/components/sections/FunFacts';
 import ChasseurTaches from './components/sections/ChasseurTaches';
 import KimiChatBot from './components/KimiChatBot';
 
+// New Immersive Components
+import ParticleSystem from '@/components/interactive/ParticleSystem';
+import ImmersiveUI from '@/components/interactive/ImmersiveUI';
+import MiniGameContainer from '@/components/interactive/MiniGameContainer';
+
 function App() {
   const [darkMode, toggleDarkMode] = useDarkMode();
   const { scrollProgress, activeSection, scrollToSection } = useScrollHandler();
   const cursorPosition = useCursorPosition();
   const { toast } = useToast();
   const { t } = useTranslation();
+
+  // Immersive UI State
+  const [miniGamesOpen, setMiniGamesOpen] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [userStats, setUserStats] = useState(() => {
+    const saved = localStorage.getItem('portfolioUserStats');
+    return saved ? JSON.parse(saved) : {
+      level: 1,
+      xp: 0,
+      nextLevelXP: 100,
+      skillPoints: 0,
+      energy: 100,
+      health: 100,
+      defense: 10,
+      attack: 15
+    };
+  });
+
+  // Save user stats to localStorage
+  useEffect(() => {
+    localStorage.setItem('portfolioUserStats', JSON.stringify(userStats));
+  }, [userStats]);
+
+  // XP Gain Handler
+  const handleXPGain = (amount) => {
+    setUserStats(prev => {
+      const newXP = prev.xp + amount;
+      const newLevel = Math.floor(newXP / 100) + 1;
+      const leveledUp = newLevel > prev.level;
+      
+      return {
+        ...prev,
+        xp: newXP,
+        level: newLevel,
+        nextLevelXP: newLevel * 100,
+        skillPoints: prev.skillPoints + (leveledUp ? 1 : 0),
+        energy: Math.min(prev.energy + (leveledUp ? 20 : 0), 100),
+        attack: prev.attack + (leveledUp ? 1 : 0),
+        defense: prev.defense + (leveledUp ? 1 : 0)
+      };
+    });
+    
+    if (Math.floor((userStats.xp + amount) / 100) > userStats.level) {
+      toast({
+        title: "🎉 Niveau Supérieur !",
+        description: `Vous avez atteint le niveau ${Math.floor((userStats.xp + amount) / 100) + 1} !`,
+        duration: 4000,
+      });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,8 +130,31 @@ function App() {
           />
         </div>
         <div className="min-h-screen relative overflow-x-hidden">
+          {/* Dynamic Particle Systems */}
+          <ParticleSystem 
+            type={activeSection === 'projects' ? 'code' : activeSection === 'skills' ? 'energy' : 'magic'}
+            particleCount={soundEnabled ? 200 : 100}
+            color={
+              activeSection === 'projects' ? '#10B981' : 
+              activeSection === 'skills' ? '#3B82F6' : 
+              activeSection === 'contact' ? '#F59E0B' : '#8B5CF6'
+            }
+            interactive={true}
+            intensity={soundEnabled ? 'high' : 'medium'}
+          />
+          
           <CursorTrail cursorPosition={cursorPosition} />
           <FloatingShapes />
+          
+          {/* Immersive UI Overlay */}
+          <ImmersiveUI 
+            userStats={userStats}
+            currentSection={activeSection}
+            onXPGain={handleXPGain}
+            onOpenMiniGames={() => setMiniGamesOpen(true)}
+            onToggleSound={() => setSoundEnabled(!soundEnabled)}
+            soundEnabled={soundEnabled}
+          />
           
           <Header 
             darkMode={darkMode} 
@@ -102,6 +180,17 @@ function App() {
           <Footer />
           <BackToTopButton />
           <Toaster />
+          
+          {/* Mini Games Modal */}
+          <AnimatePresence>
+            {miniGamesOpen && (
+              <MiniGameContainer 
+                isOpen={miniGamesOpen}
+                onClose={() => setMiniGamesOpen(false)}
+                onXPGain={handleXPGain}
+              />
+            )}
+          </AnimatePresence>
         </div>
       </>
     </HelmetProvider>
